@@ -1,9 +1,9 @@
 {
-  "name": "react-native-sideswipe",
-  "version": "1.4.2",
-  "description": "cross-platform react native carousel with sensible defaults",
+  "name": "react-native-sideswipe-ts",
+  "version": "1.0.0",
+  "description": "A performant react native virtualized carousel",
   "main": "src/index.js",
-  "repository": "https://github.com/kkemple/react-native-sideswipe",
+  "repository": "https://github.com/tootsweet/react-native-sideswipe/tags",
   "author": "Kurtis Kemple <kurtiskemple@gmail.com>",
   "license": "MIT",
   "private": false,
