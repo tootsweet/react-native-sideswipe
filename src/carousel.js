@@ -100,15 +100,11 @@ export default class SideSwipe extends Component<CarouselProps, State> {
     };
 
     onViewableItemsChanged(obj: any) {
-        console.log(obj.viewableItems)
-
         if (!obj || !obj.viewableItems || !obj.viewableItems.length || obj.viewableItems.length > 1 || !this.props.onIndexChange) {
             return;
         }
 
         const index = obj.viewableItems[0].index;
-
-        console.log("b");
         this.props.onIndexChange(index);
     }
 
@@ -189,7 +185,6 @@ export default class SideSwipe extends Component<CarouselProps, State> {
     handleGestureRelease = (e: GestureEvent, { dx, vx }: GestureState) => {
 
         let ms = Date.now();
-        console.log("handleGestureRelease started");
 
         const currentOffset: number = this.state.currentIndex * this.props.itemWidth;
         const resolvedOffset: number = currentOffset - dx;
@@ -218,7 +213,6 @@ export default class SideSwipe extends Component<CarouselProps, State> {
         );
 
         ms = Date().now() - ms;
-        console.log("handleGestureRelease finished (" + ms + " ms)");
     };
 }
 
