@@ -86,18 +86,32 @@ export default class SideSwipe extends Component<CarouselProps, State> {
                 () => ({ currentIndex: nextProps.index }),
                 () => {
                     setTimeout(
-                        () =>
-                            this.list.scrollToIndex({
+                        () => {
+                            const scrollTo = {
                                 index: this.state.currentIndex,
                                 animated: true,
                                 viewOffset: this.props.contentOffset,
-                            }),
+                            };
+                            this.list.scrollToIndex(scrollTo)
+                        },
                         200
                     );
                 }
             );
         }
     };
+
+    onMomentumScrollEnd(e: any) {
+        const obj = e.nativeEvent;
+        if (obj && obj.contentOffset && obj.contentOffset.x !== undefined &&
+            obj.layoutMeasurement && obj.layoutMeasurement.width !== undefined
+        ) {
+            const offsetX = obj.contentOffset.x;
+            const width = obj.layoutMeasurement.width;
+            const index = Math.floor(offsetX / width);
+            this.props.onIndexChange(index);
+        }
+    }
 
     onViewableItemsChanged(obj: any) {
         if (!obj || !obj.viewableItems || !obj.viewableItems.length || obj.viewableItems.length > 1 || !this.props.onIndexChange) {
@@ -109,6 +123,7 @@ export default class SideSwipe extends Component<CarouselProps, State> {
     }
 
     render = () => {
+
         const {
             style,
             flatListStyle,
@@ -117,7 +132,9 @@ export default class SideSwipe extends Component<CarouselProps, State> {
             contentOffset,
             extractKey,
             renderItem,
+            debug
         } = this.props;
+
 
         const { currentIndex, scrollPosAnim, animatedValue } = this.state;
         const dataLength = data.length;
@@ -138,16 +155,18 @@ export default class SideSwipe extends Component<CarouselProps, State> {
                 style={[styles.flatList, flatListStyle]}
                 scrollEventThrottle={100}
                 pagingEnabled={true}
-                onViewableItemsChanged={this.onViewableItemsChanged}
+                onMomentumScrollEnd={this.onMomentumScrollEnd.bind(this)}
                 viewabilityConfig={config}
-                renderItem={({ item, index }) =>
-                    renderItem({
+                debug={debug}
+                renderItem={({ item, index }) => {
+                    return renderItem({
                         item,
                         currentIndex,
                         itemIndex: index,
                         itemCount: dataLength,
                         animatedValue: animatedValue,
                     })
+                }
                 }
             />
         );
@@ -159,11 +178,16 @@ export default class SideSwipe extends Component<CarouselProps, State> {
         }
     };
 
-    getItemLayout = (data: Array<*>, index: number) => ({
-        offset: this.props.itemWidth * index + this.props.contentOffset,
-        length: this.props.itemWidth,
-        index,
-    });
+    getItemLayout = (data: Array<*>, index: number) => {
+        
+        const result = {
+            offset: this.props.itemWidth * index + this.props.contentOffset,
+            length: this.props.itemWidth,
+            index
+        }
+
+        return result;
+    };
 
     handleGestureTerminationRequest = (e: GestureEvent, s: GestureState) =>
         this.props.shouldRelease(s);

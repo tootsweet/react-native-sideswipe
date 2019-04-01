@@ -61,6 +61,7 @@ export type CarouselProps = CarouselDefaultProps & {
   style?: Styles,
   flatListStyle?: Styles,
   contentContainerStyle?: Styles,
+  debug?: boolean
 };
 
 export type CarouselRenderProps = {
